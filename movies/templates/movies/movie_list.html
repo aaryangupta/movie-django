@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie List</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movies/css/styles.css' %}">
+</head>
+<body>
+    <header>
+        {% if search_query %}
+            <h1>Movies Found</h1>
+        {% else %}
+            <h1>Movies</h1>
+        {% endif %}
+        <nav>
+            {% if user.is_authenticated %}
+                <span>Welcome, {{ user.username }}</span> | 
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a> | 
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </nav>
+    </header>
+    <div class="container">
+        <!-- Search Form -->
+        <form method="GET" action="{% url 'movie_list' %}">
+            <input type="text" name="q" placeholder="Search movies" value="{{ search_query }}">
+            <button type="submit" class="btn">Search</button>
+        </form>
+
+        <ul class="movie-list">
+            {% for movie in movies %}
+                <li>
+                    {% if movie.Poster and movie.Poster != "N/A" %}
+                        <img src="{{ movie.Poster }}" alt="{{ movie.Title }}">
+                    {% endif %}
+                    <h3>
+                        <a href="{% url 'movie_detail' movie.imdbID %}">{{ movie.Title }}</a>
+                    </h3>
+                    <p>({{ movie.Year }})</p>
+                    <p class="price">Price: ₹{{ price_per_ticket }}</p>
+                </li>
+            {% empty %}
+                <!-- यदि user ने कुछ search किया है लेकिन कोई result नहीं मिला, तो यह दिखेगा -->
+                <li>No movies found for "{{ search_query }}".</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

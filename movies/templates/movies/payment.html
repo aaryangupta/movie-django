@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment for {{ booking.movie_title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movies/css/styles.css' %}">
+
+    <style>
+        /* Radio Button Size */
+        input[type="radio"] {
+            width: 20px;  /* अपनी जरूरत के हिसाब से adjust करें */
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+
+    <script>
+        // JavaScript to show/hide fields based on selected payment method
+        function togglePaymentMethodFields() {
+            var paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            var upiField = document.getElementById('upi-field');
+            var qrSection = document.getElementById('qr-section');
+            
+            if (paymentMethod === 'upi') {
+                // UPI chosen
+                upiField.style.display = 'block';
+                qrSection.style.display = 'none';
+            } else {
+                // QR chosen
+                upiField.style.display = 'none';
+                qrSection.style.display = 'block';
+            }
+        }
+
+        window.onload = function() {
+            var radios = document.querySelectorAll('input[name="payment_method"]');
+            radios.forEach(function(radio) {
+                radio.addEventListener('change', togglePaymentMethodFields);
+            });
+            togglePaymentMethodFields();  // Initial call to set correct display
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Payment</h1>
+    </header>
+    <div class="container">
+        <h2>Movie: {{ booking.movie_title }}</h2>
+        <p>Number of Tickets: {{ booking.seats }}</p>
+        <p>Price per Ticket: ₹{{ price_per_ticket }}</p>
+        <h3>Total Amount: ₹{{ total_amount }}</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            <!-- Payment Method Radio Buttons -->
+            <p><strong>Payment Method:</strong></p>
+            {{ form.payment_method }}<br><br>
+
+            <!-- UPI ID Input Field, shown only if UPI method is selected -->
+            <div id="upi-field" style="display: none;">
+                {{ form.upi_id.label_tag }}<br>
+                {{ form.upi_id }}<br><br>
+            </div>
+
+            <!-- QR Code Section, shown only if QR method is selected -->
+            <div id="qr-section" style="display: none;">
+                <p>If you choose to pay by QR code, please scan the QR code below:</p>
+                <img src="{% static 'C:\Ues\css\images\qr_code.jpg' %}" alt="QR Code" style="width:200px;"><br><br>
+            </div>
+
+            <button class="btn" type="submit">Confirm Payment</button>
+        </form>
+
+        <p><a href="{% url 'movie_list' %}">Cancel Payment</a></p>
+    </div>
+</body>
+</html>

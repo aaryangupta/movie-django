@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ movie.Title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movies/css/styles.css' %}">
+    <script>
+        // JavaScript to toggle the edit form visibility
+        function showEditForm() {
+            var formDiv = document.getElementById("editReviewForm");
+            formDiv.style.display = "block";  // make the form visible
+        }
+        function hideEditForm() {
+            var formDiv = document.getElementById("editReviewForm");
+            formDiv.style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>{{ movie.Title }}</h1>
+    </header>
+    <div class="container">
+        <!-- Movie Details -->
+        {% if movie.Poster and movie.Poster != "N/A" %}
+            <img src="{{ movie.Poster }}" alt="{{ movie.Title }}" style="width:200px;">
+        {% endif %}
+        <p><strong>Year:</strong> {{ movie.Year }}</p>
+        <p><strong>Genre:</strong> {{ movie.Genre }}</p>
+        <p><strong>Plot:</strong> {{ movie.Plot }}</p>
+        <p><strong>Director:</strong> {{ movie.Director }}</p>
+        <p class="price"><strong>Price per Ticket:</strong> ₹{{ price_per_ticket }}</p>
+        <a class="btn" href="{% url 'book_ticket' movie.Title %}">Book Ticket</a>
+        <br><br>
+
+        <!-- All Reviews -->
+        <h3>Reviews</h3>
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review">
+                    <p><strong>{{ review.user.username }}</strong> rated <strong>{{ review.rating }}/5</strong></p>
+                    <p>{{ review.comment }}</p>
+                    <p><small>Posted on {{ review.created_at }}</small></p>
+                    <hr>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet. Be the first to add one!</p>
+        {% endif %}
+
+        <!-- Current User's Review + Edit Option -->
+        {% if user.is_authenticated %}
+            {% if user_review %}
+                <!-- User already has a review -->
+                <h3>Your Review</h3>
+                <p><strong>Rating:</strong> {{ user_review.rating }}/5</p>
+                <p>{{ user_review.comment }}</p>
+                <button class="btn" type="button" onclick="showEditForm()">Edit Review</button>
+
+                <!-- Hidden form for editing the review -->
+                <div id="editReviewForm" style="display: none; margin-top: 20px;">
+                    <h4>Edit your Review</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="btn" type="submit">Save Changes</button>
+                        <button class="btn" type="button" onclick="hideEditForm()">Cancel</button>
+                    </form>
+                </div>
+            {% else %}
+                <!-- User has no review yet, show Add a Review form by default -->
+                <h3>Add a Review</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="btn" type="submit">Submit Review</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}">Log in</a> to add or edit a review.</p>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'movie_list' %}">Back to Movies</a>
+    </div>
+</body>
+</html>

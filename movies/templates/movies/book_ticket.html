@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Ticket for {{ movie_title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movies/css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Book Ticket for "{{ movie_title }}"</h1>
+    </header>
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn" type="submit">Book Now</button>
+        </form>
+        <p><a href="{% url 'movie_list' %}">Back to Movies</a></p>
+    </div>
+</body>
+</html>

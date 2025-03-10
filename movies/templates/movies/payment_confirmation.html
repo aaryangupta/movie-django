@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Confirmation - {{ booking.movie_title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movies/css/styles.css' %}">
+    <style>
+        /* Optional bill style CSS */
+        .bill {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            background: #f9f9f9;
+        }
+        .bill h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bill .details {
+            margin-bottom: 15px;
+        }
+        .bill .details span {
+            display: inline-block;
+            width: 200px;
+        }
+        .bill .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: right;
+        }
+        .bill .btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Payment Confirmation</h1>
+    </header>
+    <div class="container">
+        <div class="bill">
+            <h2>Payment Receipt</h2>
+            <div class="details">
+                <p><span>Movie:</span> {{ booking.movie_title }}</p>
+                <p><span>Number of Tickets:</span> {{ booking.seats }}</p>
+                <p><span>Price per Ticket:</span> ₹{{ price_per_ticket }}</p>
+            </div>
+            <div class="total">
+                <p>Total Amount: ₹{{ total_amount }}</p>
+            </div>
+            <p>Your payment has been successfully processed.</p>
+            <a class="btn" href="{% url 'movie_list' %}">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
