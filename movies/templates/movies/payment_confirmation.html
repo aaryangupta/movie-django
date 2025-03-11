@@ -46,11 +46,11 @@
             <div class="details">
                 <p><span>Movie:</span> {{ booking.movie_title }}</p>
                 <p><span>Number of Tickets:</span> {{ booking.seats }}</p>
-                <p><span>Price per Ticket:</span> ₹{{ price_per_ticket }}</p>
-            </div>
-            <div class="total">
-                <p>Total Amount: ₹{{ total_amount }}</p>
-            </div>
+                <p><span>Price per Ticket:</span> €{{ price_per_ticket }}</p>
+                <div class="total">
+                    <p>Total Amount: €{{ total_amount }}</p>
+                </div>
+                
             <p>Your payment has been successfully processed.</p>
             <a class="btn" href="{% url 'movie_list' %}">Back to Home</a>
         </div>

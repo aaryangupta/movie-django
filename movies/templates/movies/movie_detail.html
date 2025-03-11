@@ -29,7 +29,8 @@
         <p><strong>Genre:</strong> {{ movie.Genre }}</p>
         <p><strong>Plot:</strong> {{ movie.Plot }}</p>
         <p><strong>Director:</strong> {{ movie.Director }}</p>
-        <p class="price"><strong>Price per Ticket:</strong> ₹{{ price_per_ticket }}</p>
+        <p class="price"><strong>Price per Ticket:</strong> €{{ price_per_ticket }}</p>
+
         <a class="btn" href="{% url 'book_ticket' movie.Title %}">Book Ticket</a>
         <br><br>
 
@@ -48,18 +49,19 @@
             <p>No reviews yet. Be the first to add one!</p>
         {% endif %}
 
-        <!-- Current User's Review + Edit Option -->
+        <!-- Current User's Review Options -->
         {% if user.is_authenticated %}
             {% if user_review %}
-                <!-- User already has a review -->
                 <h3>Your Review</h3>
                 <p><strong>Rating:</strong> {{ user_review.rating }}/5</p>
                 <p>{{ user_review.comment }}</p>
+                <!-- Edit and Delete Buttons -->
                 <button class="btn" type="button" onclick="showEditForm()">Edit Review</button>
-
+                <button class="btn" type="button" onclick="if(confirm('Are you sure you want to delete your review?')) { document.getElementById('deleteReviewForm').submit(); }">Delete Review</button>
+                
                 <!-- Hidden form for editing the review -->
                 <div id="editReviewForm" style="display: none; margin-top: 20px;">
-                    <h4>Edit your Review</h4>
+                    <h4>Edit Your Review</h4>
                     <form method="POST">
                         {% csrf_token %}
                         {{ form.as_p }}
@@ -67,8 +69,12 @@
                         <button class="btn" type="button" onclick="hideEditForm()">Cancel</button>
                     </form>
                 </div>
+                
+                <!-- Hidden inline form for deleting the review -->
+                <form id="deleteReviewForm" method="POST" action="{% url 'delete_review' user_review.id %}" style="display: none;">
+                    {% csrf_token %}
+                </form>
             {% else %}
-                <!-- User has no review yet, show Add a Review form by default -->
                 <h3>Add a Review</h3>
                 <form method="POST">
                     {% csrf_token %}
@@ -77,7 +83,7 @@
                 </form>
             {% endif %}
         {% else %}
-            <p><a href="{% url 'login' %}">Log in</a> to add or edit a review.</p>
+            <p><a href="{% url 'login' %}">Log in</a> to add, edit, or delete a review.</p>
         {% endif %}
 
         <br>

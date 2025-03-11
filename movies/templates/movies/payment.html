@@ -8,7 +8,7 @@
     <style>
         /* Radio Button Size */
         input[type="radio"] {
-            width: 20px;  
+            width: 20px;  /* अपनी जरूरत के हिसाब से adjust करें */
             height: 20px;
             margin-right: 5px;
         }
@@ -48,9 +48,9 @@
     <div class="container">
         <h2>Movie: {{ booking.movie_title }}</h2>
         <p>Number of Tickets: {{ booking.seats }}</p>
-        <p>Price per Ticket: ₹{{ price_per_ticket }}</p>
-        <h3>Total Amount: ₹{{ total_amount }}</h3>
-
+        <p>Price per Ticket: €{{ price_per_ticket }}</p>
+        <h3>Total Amount: €{{ total_amount }}</h3>
+        
         <form method="post">
             {% csrf_token %}
             <!-- Payment Method Radio Buttons -->

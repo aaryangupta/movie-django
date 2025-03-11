@@ -4,27 +4,132 @@
     <title>Movie List</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'movies/css/styles.css' %}">
+    <style>
+        /* Header Styling */
+        header {
+            background: #333;  /* काला बैकग्राउंड */
+            color: #fff;
+            padding: 10px 20px;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* बटन बाईं तरफ, nav दाईं तरफ, बीच में title */
+        }
+
+        /* Left Buttons */
+        .left-buttons .btn {
+            margin-right: 10px;
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .left-buttons .btn:hover {
+            background: #555;
+        }
+
+        /* Title in header */
+        .header-title h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Nav styling */
+        nav a {
+            color: #fff;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container for main content */
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        /* Movie list styling */
+        ul.movie-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        ul.movie-list li {
+            background: #fafafa;
+            width: calc(25% - 20px);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            padding: 10px;
+        }
+        ul.movie-list li img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .price {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            ul.movie-list li {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            ul.movie-list li {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- HEADER -->
     <header>
-        {% if search_query %}
-            <h1>Movies Found</h1>
-        {% else %}
-            <h1>Movies</h1>
-        {% endif %}
-        <nav>
-            {% if user.is_authenticated %}
-                <span>Welcome, {{ user.username }}</span> | 
-                <a href="{% url 'logout' %}">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}">Login</a> | 
-                <a href="{% url 'signup' %}">Sign Up</a>
-            {% endif %}
-        </nav>
+        <div class="header-container">
+            <!-- Left Buttons -->
+            <div class="left-buttons">
+                <button class="btn">Car</button>
+                <button class="btn">Food &amp; Drink</button>
+            </div>
+            
+            <!-- Title in center -->
+            <div class="header-title">
+                {% if search_query %}
+                    <h1>Movies Found</h1>
+                {% else %}
+                    <h1>Movies</h1>
+                {% endif %}
+            </div>
+
+            <!-- Right side nav (login/logout) -->
+            <nav>
+                {% if user.is_authenticated %}
+                    <span>Welcome, {{ user.username }}</span> | 
+                    <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a> | 
+                    <a href="{% url 'signup' %}">Sign Up</a>
+                {% endif %}
+            </nav>
+        </div>
     </header>
+
+    <!-- MAIN CONTENT -->
     <div class="container">
         <!-- Search Form -->
-        <form method="GET" action="{% url 'movie_list' %}">
+        <form method="GET" action="{% url 'movie_list' %}" style="margin-bottom: 20px;">
             <input type="text" name="q" placeholder="Search movies" value="{{ search_query }}">
             <button type="submit" class="btn">Search</button>
         </form>
@@ -39,13 +144,13 @@
                         <a href="{% url 'movie_detail' movie.imdbID %}">{{ movie.Title }}</a>
                     </h3>
                     <p>({{ movie.Year }})</p>
-                    <p class="price">Price: ₹{{ price_per_ticket }}</p>
+                    <p class="price">Price per Ticket: €{{ price_per_ticket }}</p>
                 </li>
             {% empty %}
-                
                 <li>No movies found for "{{ search_query }}".</li>
             {% endfor %}
         </ul>
     </div>
+
 </body>
 </html>
