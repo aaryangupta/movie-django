@@ -8,21 +8,17 @@ from .api import search_movies, get_movie_details
 from .models import Booking, Review
 
 def movie_list(request):
-    # GET parameter से raw_query लें (यदि user ने कुछ search किया है)
     raw_query = request.GET.get('q', '').strip()
-    price_per_ticket = 20  # Updated: 20 Euros per ticket
+    price_per_ticket = 20  
     if raw_query:
-        # अगर user ने कुछ दिया है तो वही query इस्तेमाल करें
         query = raw_query
     else:
-        # अगर user ने कुछ नहीं दिया, तो random query से movies fetch करें
         possible_queries = [
             "star", "love", "life", "war", "man", "girl",
             "dark", "new", "old", "king", "queen", "action",
             "comedy", "drama", "thriller", "sci-fi"
         ]
         query = random.choice(possible_queries)
-    # OMDb API से कम से कम 25 movies fetch करें
     movies = search_movies(query, count=25)
     return render(request, 'movies/movie_list.html', {
         'movies': movies,
@@ -32,12 +28,12 @@ def movie_list(request):
     })
 
 def movie_detail(request, imdb_id):
-    # OMDb API से movie details प्राप्त करें
+    
     movie = get_movie_details(imdb_id)
     price_per_ticket = 20
-    # सारे reviews fetch करें
+    
     reviews = Review.objects.filter(movie_imdb_id=imdb_id).order_by('-created_at')
-    # current user का existing review (यदि कोई है)
+    
     user_review = None
     if request.user.is_authenticated:
         user_review = Review.objects.filter(movie_imdb_id=imdb_id, user=request.user).first()
@@ -45,7 +41,7 @@ def movie_detail(request, imdb_id):
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('login')
-        # अगर user का review पहले से है, तो edit mode; नहीं तो add mode
+        
         if user_review:
             form = ReviewForm(request.POST, instance=user_review)
         else:

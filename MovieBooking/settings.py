@@ -57,7 +57,7 @@ ROOT_URLCONF = 'MovieBooking.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # यदि आप global templates folder उपयोग नहीं कर रहे
+        'DIRS': [],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
